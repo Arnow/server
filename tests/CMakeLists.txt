@@ -25,8 +25,8 @@ INCLUDE_DIRECTORIES(BEFORE
 MYSQL_ADD_EXECUTABLE(mysql_client_test mysql_client_test.c COMPONENT Test)
 SET(CLIENT_LIB mariadbclient mysys)
 
-TARGET_LINK_LIBRARIES(mysql_client_test ${CLIENT_LIB})
-ADD_DEPENDENCIES(mysql_client_test GenError ${CLIENT_LIB})
+TARGET_LINK_LIBRARIES(mariadb-client-test ${CLIENT_LIB})
+ADD_DEPENDENCIES(mariadb-client-test GenError ${CLIENT_LIB})
 
 IF(WITH_UNIT_TESTS)
   ADD_EXECUTABLE(bug25714 bug25714.c)

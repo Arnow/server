@@ -230,7 +230,7 @@ MYSQL_ADD_EXECUTABLE(sst_dump rocksdb/tools/sst_dump.cc COMPONENT rocksdb-engine
 TARGET_LINK_LIBRARIES(sst_dump rocksdblib)
 
 MYSQL_ADD_EXECUTABLE(mysql_ldb tools/mysql_ldb.cc COMPONENT rocksdb-engine)
-TARGET_LINK_LIBRARIES(mysql_ldb rocksdb_tools rocksdb_aux_lib dbug)
+TARGET_LINK_LIBRARIES(mariadb-ldb rocksdb_tools rocksdb_aux_lib dbug)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/myrocks_hotbackup.py
   ${CMAKE_CURRENT_BINARY_DIR}/myrocks_hotbackup @ONLY)

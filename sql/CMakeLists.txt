@@ -298,50 +298,50 @@ IF(APPLE)
   # Add CoreServices framework since some dloadable plugins may need it 
   FIND_LIBRARY(CORESERVICES NAMES CoreServices) 
   IF(CORESERVICES) 
-    TARGET_LINK_LIBRARIES(mysqld LINK_PRIVATE ${CORESERVICES})
+    TARGET_LINK_LIBRARIES(mariadbd LINK_PRIVATE ${CORESERVICES})
   ENDIF() 
 ENDIF() 
 
 IF(NOT WITHOUT_DYNAMIC_PLUGINS)
   IF(NOT MSVC)
-    SET_TARGET_PROPERTIES(mysqld PROPERTIES ENABLE_EXPORTS TRUE)
+    SET_TARGET_PROPERTIES(mariadbd PROPERTIES ENABLE_EXPORTS TRUE)
   ENDIF()
-  GET_TARGET_PROPERTY(mysqld_link_flags mysqld LINK_FLAGS)
+  GET_TARGET_PROPERTY(mysqld_link_flags mariadbd LINK_FLAGS)
   IF(NOT mysqld_link_flags)
     SET(mysqld_link_flags)
   ENDIF()
   IF (MINGW OR CYGWIN)
-    SET_TARGET_PROPERTIES(mysqld PROPERTIES LINK_FLAGS "${mysqld_link_flags} -Wl,--export-all-symbols")
+    SET_TARGET_PROPERTIES(mariadbd PROPERTIES LINK_FLAGS "${mysqld_link_flags} -Wl,--export-all-symbols")
   ENDIF()
   IF(MSVC)
-    SET_TARGET_PROPERTIES(mysqld PROPERTIES LINK_FLAGS "${mysqld_link_flags} \"${MYSQLD_EXP}\"")
-    ADD_DEPENDENCIES(mysqld gen_mysqld_lib)
+    SET_TARGET_PROPERTIES(mariadbd PROPERTIES LINK_FLAGS "${mysqld_link_flags} \"${MYSQLD_EXP}\"")
+    ADD_DEPENDENCIES(mariadbd gen_mysqld_lib)
   ENDIF()
 ENDIF(NOT WITHOUT_DYNAMIC_PLUGINS)
 
-TARGET_LINK_LIBRARIES(mysqld LINK_PRIVATE sql sql_builtins)
+TARGET_LINK_LIBRARIES(mariadbd LINK_PRIVATE sql sql_builtins)
 
 
 # Provide plugins with minimal set of libraries
 SET(INTERFACE_LIBS ${LIBRT})
 IF(INTERFACE_LIBS)
-  TARGET_LINK_LIBRARIES(mysqld LINK_PUBLIC ${INTERFACE_LIBS})
+  TARGET_LINK_LIBRARIES(mariadbd LINK_PUBLIC ${INTERFACE_LIBS})
 ENDIF()
 
 # On Solaris, some extra effort is required in order to get dtrace probes
 # from static libraries
-DTRACE_INSTRUMENT_STATIC_LIBS(mysqld 
+DTRACE_INSTRUMENT_STATIC_LIBS(mariadbd 
  "sql;mysys;mysys_ssl;${MYSQLD_STATIC_PLUGIN_LIBS}")
  
 
 SET(WITH_MYSQLD_LDFLAGS "" CACHE STRING "Additional linker flags for mysqld")
 MARK_AS_ADVANCED(WITH_MYSQLD_LDFLAGS)
 IF(WITH_MYSQLD_LDFLAGS)
-  GET_TARGET_PROPERTY(MYSQLD_LINK_FLAGS mysqld LINK_FLAGS)
+  GET_TARGET_PROPERTY(MYSQLD_LINK_FLAGS mariadbd LINK_FLAGS)
   IF(NOT MYSQLD_LINK_FLAGS)
     SET(MYSQLD_LINK_FLAGS) 
   ENDIF() 
-  SET_TARGET_PROPERTIES(mysqld PROPERTIES LINK_FLAGS 
+  SET_TARGET_PROPERTIES(mariadbd PROPERTIES LINK_FLAGS 
      "${MYSQLD_LINK_FLAGS} ${WITH_MYSQLD_LDFLAGS}")
 ENDIF()
 
@@ -396,8 +396,8 @@ ADD_CUSTOM_COMMAND(
 )
 
 MYSQL_ADD_EXECUTABLE(mysql_tzinfo_to_sql tztime.cc COMPONENT Server)
-SET_TARGET_PROPERTIES(mysql_tzinfo_to_sql PROPERTIES COMPILE_FLAGS "-DTZINFO2SQL")
-TARGET_LINK_LIBRARIES(mysql_tzinfo_to_sql mysys mysys_ssl)
+SET_TARGET_PROPERTIES(mariadb-tzinfo-to-sql PROPERTIES COMPILE_FLAGS "-DTZINFO2SQL")
+TARGET_LINK_LIBRARIES(mariadb-tzinfo-to-sql mysys mysys_ssl)
 
 ADD_CUSTOM_TARGET( 
         GenServerSource
@@ -502,8 +502,8 @@ IF(WIN32)
     ${CMAKE_CURRENT_BINARY_DIR}/mysql_bootstrap_sql.c
     COMPONENT Server
   )
-  SET_TARGET_PROPERTIES(mysql_install_db PROPERTIES COMPILE_FLAGS -DINSTALL_PLUGINDIR=${INSTALL_PLUGINDIR})
-  TARGET_LINK_LIBRARIES(mysql_install_db mysys shlwapi)
+  SET_TARGET_PROPERTIES(mariadb-install-db PROPERTIES COMPILE_FLAGS -DINSTALL_PLUGINDIR=${INSTALL_PLUGINDIR})
+  TARGET_LINK_LIBRARIES(mariadb-install-db mysys shlwapi)
 
   ADD_LIBRARY(winservice STATIC winservice.c)
   TARGET_LINK_LIBRARIES(winservice shell32)
@@ -512,7 +512,7 @@ IF(WIN32)
     mysql_upgrade_service.cc
     upgrade_conf_file.cc
     COMPONENT Server)
-  TARGET_LINK_LIBRARIES(mysql_upgrade_service mysys winservice)
+  TARGET_LINK_LIBRARIES(mariadb-upgrade-service mysys winservice)
 ENDIF(WIN32)
 
 INSTALL(DIRECTORY . DESTINATION ${INSTALL_INCLUDEDIR}/server/private COMPONENT Development
